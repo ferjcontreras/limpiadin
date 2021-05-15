@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Limpiadín - Home</title>
+    <meta name="author" content="Fernando Contreras">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <!-- font-awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"/>
+
+
+    <!-- bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+
+    <!-- Mercado Pago -->
+    <script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
+
+
+    <script type="text/javascript">
+      function AbrirCategoria(){
+        document.forms['Home'].action = 'categoria.php';
+        document.forms['Home'].submit();
+      }
+
+
+
+
+    </script>
+  </head>
+  <body>
+    <form name="Categoria" action="index.php" method="post">
+    </form>
+      <?php include_once("header.php"); ?>
+      <div class="cuerpo">
+        <div class="container">
+          <p id="titulo">Carrito de Compras</p>
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="item_carrito">
+
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <?php
+
+
+              //  vendedor {"id":653163191,"nickname":"TESTG0UV575G","password":"qatest277","site_status":"active","email":"test_user_1521502@testuser.com"}
+              // comprador {"id":653164775,"nickname":"TESTINMLMYCL","password":"qatest4523","site_status":"active","email":"test_user_4231181@testuser.com"}
+
+
+                  // SDK de Mercado Pago
+                  require   'MPLib/vendor/autoload.php';
+
+                  // Agrega credenciales
+                  MercadoPago\SDK::setAccessToken('TEST-6342493677849968-100214-3b39c3b28f80f91d92cccc78645571c3-653163191');
+
+                  // Crea un objeto de preferencia
+                  $preference = new MercadoPago\Preference();
+                  $preference->back_urls = array(
+                      "success" => "success.php",
+                      "failure" => "failure.php",
+                      "pending" => "pending.php"
+                    );
+                  $preference->auto_return = "approved";
+
+
+
+                  // Crea un ítem en la preferencia
+                  $datos = array();
+                  for ($i = 0; $i < 10; $i++) {
+                    $item = new MercadoPago\Item();
+                    $item->title = 'Detergente $i';
+                    $item->quantity = 1;
+                    $item->unit_price = 75.56;
+                    $datos[] = $item;
+                  }
+
+
+
+                  $preference->items = $datos;
+                  $preference->save();
+              ?>
+              <form action="procesar-pago.php" method="POST">
+                <input type="hidden" name="variable" value="valor">
+                <script
+                  src="https://www.mercadopago.com.ar/integrations/v1/web-payment-checkout.js"
+                  data-preference-id="<?php echo $preference->id; ?>">
+                </script>
+              </form>
+
+
+            </div>
+          </div>
+
+
+        </div>
+
+      </div>
+      <?php include_once("footer.php"); ?>
+  </body>
+</html>
