@@ -1,13 +1,15 @@
 <!-- HEADER -->
-<div class="header" onclick="Javascript:IrAHome();" style="cursor:pointer;">
-  <img src="images/banner.png" alt="" class="franja">
+<div class="header">
+  <img src="images/banner.png" alt="" class="franja" onclick="Javascript:IrAHome();" style="cursor:pointer;">
   <div class="bidonescontainer">
     <div class="container" style="height:100%;">
       <div class="row" id="filaheader">
         <div class="col-sm-6 col-xs-12" id="busquedaheader">
           <center><div id="search-wrapper">
-            <input type="search" id="search" placeholder="Buscar Producto..."/>
-            <i class="fa fa-search"></i>
+            <!--form name="BusquedaProducto" action="busqueda_productos.php"-->
+              <input type="text" name="bproducto" id="search" placeholder="Buscar Producto..." onchange="Javascript:Buscar();"/>
+              <i class="fa fa-search"></i>
+            <!--/form-->
           </div></center>
         </div>
         <div class="col-sm-6 col-xs-12" id="menuheader">
@@ -22,6 +24,12 @@
 <script type="text/javascript">
   function IrAHome() {
     document.forms[0].action = "index.php";
+    document.forms[0].submit();
+  }
+  function Buscar() {
+    //alert("Buscamos...");
+    //alert("Formulario apunta a :"+document.forms[0].action);
+    document.forms[0].action = "busqueda_productos.php";
     document.forms[0].submit();
   }
 </script>

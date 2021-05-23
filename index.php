@@ -77,6 +77,38 @@
         document.forms['Home'].total_carrito.value = parseInt(document.forms['Home'].total_carrito.value) - 1;
         document.getElementById("numero_carrito").innerHTML = document.forms['Home'].total_carrito.value;
       }
+      function MostrarContenidoCombo(id_combo) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            respuesta = this.responseText;
+
+            if (respuesta == "error") {
+              alert("Ocurrió un problema al cargar el contenido");
+            }
+            else {
+              //alert("Agregamos "+respuesta+"... cant-"+id+"-id");
+              //CargarComboById(id_combo);
+              document.getElementById("detalle_combo").innerHTML = respuesta;
+              document.getElementById("detalle_combo").style.marginLeft = "0em";
+            }
+          } else if (this.readyState == 404) {
+            alert("No se encuentra el archivo php");
+          }
+        };
+        var parameters = "id_combo="+id_combo;
+        xhttp.open("POST", "ajax/mostrar_combo.php", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.setRequestHeader('If-Modified-Since', 'Wed, 1 Jan 2003 00:00:00 GMT');
+        xhttp.setRequestHeader( "Cache-Control", "no-store, no-cache, max-age=0, must-revalidate" );
+        xhttp.send(parameters);
+
+        //window.open(URL, "Productos", "directories=0,toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=710,height=500,left = 390,top = 50");
+
+      }
+      function CerrarCombo() {
+        document.getElementById("detalle_combo").style.marginLeft = "-100em";
+      }
     </script>
   </head>
   <body <?php if (!isset($_SESSION['UserID'])) echo "onload='Javascript:AbrirLogin();'" ?>>
@@ -106,7 +138,7 @@
                 <?php } else { ?>
                   <div class="swiper-slide swiper-slide1" style="background-image: url('images/no_disponible.png'); background-size: cover; background-repeat: no-repeat; background-position: center center;">
                 <?php } ?>
-                    <div class="producto">
+                    <div class="producto" onclick="MostrarContenidoCombo(<?php echo $DBarr[0] ?>)">
                       <p class="precio">$<?php echo $DBarr[3] ?></p>
                       <div class="nombre_producto">
                         <p ><b><?php echo $DBarr[1] ?></b><br><?php echo $DBarr[2] ?></p>
@@ -122,14 +154,15 @@
                 <?php
                   }
                 ?>
-
           </div> <!-- swiper container -->
           <div class="swiper-button-next swiper-button-next1"></div>
           <div class="swiper-button-prev swiper-button-prev1"></div>
         </div> <!-- slidemaster -->
       </div> <!-- combos container -->
     </div>
+    <div class="mostrar_combo" id="detalle_combo">
 
+    </div>
 
         <div class="categorias container">
           <p>Categorías</p>

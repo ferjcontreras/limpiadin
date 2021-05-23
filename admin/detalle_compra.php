@@ -8,91 +8,11 @@
     include_once("login.php");
   }
 
-
-  function DescontarStock($CodProducto, $Cantidad, $Comments) {
-    global $db;
-    $UserID = $_SESSION['UserID'];
-
-    // Primero debemos verificar que exista el registro de Stock para ese producto
-    $sqlqry = "SELECT ID FROM Stock WHERE IDProducto = '$CodProducto';";
-    $DBres = mysqli_query($db, $sqlqry);
-    if (mysqli_errno($db)) {
-      echo "Error en consulta: $sqlqry";
-    }
-    if (mysqli_num_rows($DBres) != 0) {
-      $DBarr = mysqli_fetch_row($DBres);
-      $IDStock = $DBarr[0];
-    }
-    else {
-      // Tenemos que agregar el registro de Stock
-      $sqlqry = "INSERT INTO Stock (IDProducto, Cantidad, UserID) VALUES('$CodProducto', 0, '$UserID');";
-      mysqli_query($db, $sqlqry);
-      if (mysqli_errno($db)) {
-        echo "Error en consulta: $sqlqry";
-      }
-      $IDStock = mysqli_insert_id($db);
-    }
-
-    $sqlqry = "UPDATE Stock SET Cantidad = Cantidad - $Cantidad, Detalle = '$Comments' WHERE ID = '$IDStock'";
-    mysqli_query($db, $sqlqry);
-    if (mysqli_errno($db)) {
-      echo "Error en consulta: $sqlqry";
-    }
-
-    // Insertamos el registro de zHis_Stock
-    $sqlqry = "INSERT INTO zHis_Stock SELECT * FROM Stock WHERE ID = '$IDStock'";
-    mysqli_query($db, $sqlqry);
-    if (mysqli_errno($db)) {
-      echo "Error en consulta: $sqlqry";
-    }
-  }
-
-
-  function AumentarStock($CodProducto, $Cantidad, $Comments) {
-    global $db;
-    $UserID = $_SESSION['UserIDAdmin'];
-
-    // Primero debemos verificar que exista el registro de Stock para ese producto
-    $sqlqry = "SELECT ID FROM Stock WHERE IDProducto = '$CodProducto';";
-    $DBres = mysqli_query($db, $sqlqry);
-    if (mysqli_errno($db)) {
-      echo "Error en consulta: $sqlqry";
-    }
-    if (mysqli_num_rows($DBres) != 0) {
-      $DBarr = mysqli_fetch_row($DBres);
-      $IDStock = $DBarr[0];
-    }
-    else {
-      // Tenemos que agregar el registro de Stock
-      $sqlqry = "INSERT INTO Stock (IDProducto, Cantidad, UserID) VALUES('$CodProducto', 0, '$UserID');";
-      mysqli_query($db, $sqlqry);
-      if (mysqli_errno($db)) {
-        echo "Error en consulta: $sqlqry";
-      }
-      $IDStock = mysqli_insert_id($db);
-    }
-
-    $sqlqry = "UPDATE Stock SET Cantidad = Cantidad + $Cantidad, Detalle = '$Comments' WHERE ID = '$IDStock'";
-    mysqli_query($db, $sqlqry);
-    if (mysqli_errno($db)) {
-      echo "Error en consulta: $sqlqry";
-    }
-
-    // Insertamos el registro de zHis_Stock
-    $sqlqry = "INSERT INTO zHis_Stock SELECT * FROM Stock WHERE ID = '$IDStock'";
-    mysqli_query($db, $sqlqry);
-    if (mysqli_errno($db)) {
-      echo "Error en consulta: $sqlqry";
-    }
-  }
-
-
+  include_once("StockFunctions.php");
 
   function FormatoFecha($fecha) {
     return substr($fecha, 8,2)."-".substr($fecha, 5,2)."-".substr($fecha,0,4);
   }
-
-
 
   if ($Flag != "") {
     //echo "Hacemos cambios";
@@ -103,24 +23,26 @@
     }
     if ($Flag == 2) { // Se confirmó el pedido
       // Debemos hacer descuento de stock en este punto dado que no se hizo al momento de realizar el pedido
-      $sqlqry = "SELECT Cantidad, CodProducto FROM DetalleCompra WHERE IDCompra = '$id_compra'";
+      $sqlqry = "SELECT DetalleCompra.Cantidad, DetalleCompra.CodProducto, Producto.IDCategoria FROM DetalleCompra, Producto WHERE DetalleCompra.CodProducto = Producto.ID AND DetalleCompra.IDCompra = '$id_compra'";
       $DBres = mysqli_query($db, $sqlqry);
       if (mysqli_errno($db)) {
         echo "error: $sqlqry";
       }
       while($DBarr = mysqli_fetch_row($DBres)) {
-        DescontarStock($DBarr[1], $DBarr[0], "Confirmación de Compra N° $id_compra");
+        if ($DBarr[2] != 1) DescontarStock($DBarr[1], $DBarr[0], "Confirmación de Compra N° $id_compra");
+        else DescontarStockCombo($DBarr[1], $DBarr[0], "Confirmación de Compra N° $id_compra por Combo");
       }
     }
     else if (($Flag == 1 && $estadoactual == 2) || ($Flag == 3 && $estadoactual == 2)) { // se colocó denuevo para pendiente ($estadonuevo == 1 && $estadoactual == 2) || ($estadonuevo == 3 && $estadoactual == 2)
       // Debemos aumentar el stock de productos
-      $sqlqry = "SELECT Cantidad, CodProducto FROM DetalleCompra WHERE IDCompra = '$id_compra'";
+      $sqlqry = "SELECT DetalleCompra.Cantidad, DetalleCompra.CodProducto, Producto.IDCategoria FROM DetalleCompra, Producto WHERE DetalleCompra.CodProducto = Producto.ID AND DetalleCompra.IDCompra = '$id_compra'";
       $DBres = mysqli_query($db, $sqlqry);
       if (mysqli_errno($db)) {
         echo "error: $sqlqry";
       }
       while($DBarr = mysqli_fetch_row($DBres)) {
-        AumentarStock($DBarr[1], $DBarr[0], "Pendiente de Compra N° $id_compra");
+        if ($DBarr[2] != 1) AumentarStock($DBarr[1], $DBarr[0], "Pendiente de Compra N° $id_compra");
+        else AumentarStockCombo($DBarr[1], $DBarr[0], "Pendiente de Compra N° $id_compra por Combo");
       }
     }
   }

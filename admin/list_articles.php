@@ -9,7 +9,7 @@
     }
 
     // Hacemos la consulta de las categorias para poder colocarlo en los select mas abajo
-    $sqlqry = "SELECT ID, Nombre FROM Categoria ORDER BY Nombre;";
+    $sqlqry = "SELECT ID, Nombre FROM Categoria WHERE Nombre != 'Combos' ORDER BY Nombre;";
     $DBres = mysqli_query($db, $sqlqry);
     if (mysqli_errno($db)) {
       echo "Error: $sqlqry";
@@ -202,7 +202,7 @@
                       <select class="" name="bcategoria" onchange="javascript:Filtrar();" style="width:100%;">
                         <option value="0">-- Seleccionar Categoría --</option>
                         <?php
-                          $sqlqry = "SELECT ID, Nombre FROM Categoria ORDER BY Nombre ";
+                          $sqlqry = "SELECT ID, Nombre FROM Categoria WHERE Nombre != 'Combos' ORDER BY Nombre ";
                           $DBres = mysqli_query($db, $sqlqry);
                           if (mysqli_errno($db)) {
                             echo "Error: $sqlqry";
@@ -228,7 +228,7 @@
           </div>
           <?php
             if ($Flag == 1 || $Flag == 0 || empty($Flag)){
-                  $sqlqry = "SELECT Producto.ID, Producto.Nombre, Producto.Detalle, Producto.Precio, Producto.Foto, Producto.IDCategoria, Producto.Disponible, Categoria.Nombre, Producto.PorcentajeGanancia, Producto.PrecioCosto, Producto.IVA, IVA.Valor FROM Producto LEFT JOIN Categoria ON Producto.IDCategoria = Categoria.ID LEFT JOIN IVA ON Producto.IVA = IVA.ID WHERE Producto.ID != 0  ";
+                  $sqlqry = "SELECT Producto.ID, Producto.Nombre, Producto.Detalle, Producto.Precio, Producto.Foto, Producto.IDCategoria, Producto.Disponible, Categoria.Nombre, Producto.PorcentajeGanancia, Producto.PrecioCosto, Producto.IVA, IVA.Valor FROM Producto LEFT JOIN Categoria ON Producto.IDCategoria = Categoria.ID LEFT JOIN IVA ON Producto.IVA = IVA.ID WHERE Producto.ID != 0 AND Categoria.Nombre != 'Combos' ";
                   if ($fnombre != "") $sqlqry .= " AND Producto.Nombre LIKE \"%$fnombre%\" ";
                   if ($fcategoria != 0) $sqlqry .= " AND Producto.IDCategoria = '$fcategoria' ";
                   $sqlqry .= " ORDER BY Producto.Nombre";

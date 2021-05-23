@@ -7,45 +7,6 @@
       return substr($Fecha,8,2)."/".substr($Fecha, 5,2)."/".substr($Fecha,0,4);
     }
 
-    function DescontarStock($CodProducto, $Cantidad, $Comments) {
-      global $db;
-      $UserID = $_SESSION['UserID'];
-
-      // Primero debemos verificar que exista el registro de Stock para ese producto
-      $sqlqry = "SELECT ID FROM Stock WHERE IDProducto = '$CodProducto';";
-      $DBres = mysqli_query($db, $sqlqry);
-      if (mysqli_errno($db)) {
-        echo "Error en consulta: $sqlqry";
-      }
-      if (mysqli_num_rows($DBres) != 0) {
-        $DBarr = mysqli_fetch_row($DBres);
-        $IDStock = $DBarr[0];
-      }
-      else {
-        // Tenemos que agregar el registro de Stock
-        $sqlqry = "INSERT INTO Stock (IDProducto, Cantidad, UserID) VALUES('$CodProducto', 0, '$UserID');";
-        mysqli_query($db, $sqlqry);
-        if (mysqli_errno($db)) {
-          echo "Error en consulta: $sqlqry";
-        }
-        $IDStock = mysqli_insert_id($db);
-      }
-
-      $sqlqry = "UPDATE Stock SET Cantidad = Cantidad - $Cantidad, Detalle = '$Comments' WHERE ID = '$IDStock'";
-      mysqli_query($db, $sqlqry);
-      if (mysqli_errno($db)) {
-        echo "Error en consulta: $sqlqry";
-      }
-
-      // Insertamos el registro de zHis_Stock
-      $sqlqry = "INSERT INTO zHis_Stock SELECT * FROM Stock WHERE ID = '$IDStock'";
-      mysqli_query($db, $sqlqry);
-      if (mysqli_errno($db)) {
-        echo "Error en consulta: $sqlqry";
-      }
-    }
-
-
 
     function ObtenerTotalCarrito(){
       if (isset($_SESSION['carrito'])) {
@@ -144,8 +105,6 @@
             $message = "Error al registrar compra: $sqlqry";
           }
 
-          // Descontar Stock
-          //DescontarStock($CodProducto, $Cantidad, "Compra a través del sitio N°Compra: $IDCompra");
         }
       }
       else {

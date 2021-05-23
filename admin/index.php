@@ -63,6 +63,10 @@
             document.forms['Admin'].action = "clientes.php";
             document.forms['Admin'].submit();
             break;
+          case 8:
+          document.forms['Admin'].action = "combos.php";
+          document.forms['Admin'].submit();
+          break;
           default:
 
         }
@@ -114,6 +118,7 @@
               <button type="button" name="button" class="boton_menu" onclick="HacerSubmit(3);">Mínimos de Compra<img src="images/minimos.svg"></button>
               <button type="button" name="button" class="boton_menu" onclick="HacerSubmit(4);">Costos de Envío<img src="images/truck.svg"></button>
               <button type="button" name="button" class="boton_menu" onclick="HacerSubmit(6);">Stock de Artículos<img src="images/boxes.svg"></button>
+                <button type="button" name="button" class="boton_menu" onclick="HacerSubmit(8);">Combos de Productos<img src="images/combo.png"></button>
             <?php } ?>
           </div>
         </div>

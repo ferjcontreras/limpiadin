@@ -19,7 +19,7 @@
       $_SESSION['carrito'] = $arreglocarrito;
       echo $arreglocarrito[$position]['Cantidad'];
     } else {
-        $sqlqry = "SELECT ID, Nombre, Precio, Foto FROM Producto WHERE ID = '$producto'";
+        $sqlqry = "SELECT ID, Nombre, Precio, Foto, IDCategoria FROM Producto WHERE ID = '$producto'";
         $DBres = mysqli_query($db, $sqlqry);
         if (mysqli_errno($db)) {
           echo "error"; // Error
@@ -30,6 +30,7 @@
           'Nombre' => $DBarr[1],
           'Precio' => $DBarr[2],
           'Foto' => $DBarr[3],
+          'IDCategoria' => $DBarr[4],
           'Cantidad' => 1
         );
         array_push($arreglocarrito, $arreglonuevo);
@@ -38,7 +39,7 @@
     }
   }
   else {
-    $sqlqry = "SELECT ID, Nombre, Precio, Foto FROM Producto WHERE ID = '$producto'";
+    $sqlqry = "SELECT ID, Nombre, Precio, Foto, IDCategoria FROM Producto WHERE ID = '$producto'";
     //echo $sqlqry;
     $DBres = mysqli_query($db, $sqlqry);
     if (mysqli_errno($db)) {
@@ -50,6 +51,7 @@
       'Nombre' => $DBarr[1],
       'Precio' => $DBarr[2],
       'Foto' => $DBarr[3],
+      'IDCategoria' => $DBarr[4],
       'Cantidad' => 1
     );
     $_SESSION['carrito'] = $arreglocarrito;

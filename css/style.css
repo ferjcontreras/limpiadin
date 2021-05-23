@@ -909,6 +909,74 @@
 }
 
 
+.mostrar_combo {
+  position: fixed;
+  top:0;
+  left: 0;
+  background: white;
+  z-index: 10;
+  transition: 1s;
+  margin-left: -100em;
+  border: 1px solid #4c9fbf;
+  margin-top: 1em;
+  width: 100%;
+}
+.cerrar_combo {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5em;
+  background: #4c9fbf;
+}
+.detalle_combo_mostrar {
+  width: 100%;
+}
+.cerrar_combo a {
+  text-decoration: none;
+  color: white;
+}
+.item_combo_mostrar {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  border: 1px solid #4c9fbf;
+  justify-content: center;
+  align-items: center;
+}
+.imagen_combo {
+  width:20%;
+}
+.imagen_combo img {
+  width: 100px;
+  height: 100px;
+  margin: 0.5em;
+}
+.precio_producto_combo {
+  width: 20%;
+}
+.nombre_producto_combo {
+  width: 50%;
+}
+.nombre_producto_combo p {
+  width: 100%;
+  text-align: center;
+  color: #4c9fbf;
+}
+.cantidad_combo {
+  width: 10%;
+}
+.cantidad_combo p {
+  width: 100%;
+  text-align: center;
+  color: #4c9fbf;
+}
+.precio_producto_combo p{
+  width: 100%;
+  text-align: center;
+  color: #4c9fbf;
+}
+
 /* Diseños para screen de escritorio, para móviles son los que deberían estar configurados arriba*/
 @media only screen and (min-width: 640px) {
   #bidones {
